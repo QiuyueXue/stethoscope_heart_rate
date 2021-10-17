@@ -15,7 +15,6 @@ const selectors = [audioInputSelect];
 
 
 
-
 function gotDevices(deviceInfos) {
   // Handles being called several times to update labels. Preserve values.
   const values = selectors.map(select => select.value);
@@ -190,7 +189,7 @@ function start() {
     audio: {
       deviceId: audioSource ? {exact: audioSource} : undefined,
       echoCancellation: true,
-      noiseSuppression: true
+      noiseSuppression: false
     }
   };
   
