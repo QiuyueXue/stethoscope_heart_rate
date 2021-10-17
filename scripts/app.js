@@ -135,8 +135,7 @@ function visualize(stream) {
 
     amplitudeCanvasCtx.lineTo(amplitudeCanvas.width, amplitudeCanvas.height/2);
     amplitudeCanvasCtx.stroke();
-  }}
-
+  }
   function compute_peaks(){
     var peaks = getPeaksAtThreshold(graphWindowData);
     console.log(peaks);
@@ -167,7 +166,7 @@ function visualize(stream) {
     intervalCounts.push(interval);
   });
   return intervalCounts;
-}
+}}
 
 
 function gotStream(stream) {
