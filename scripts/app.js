@@ -54,7 +54,7 @@ function visualize(stream) {
   gainNode.gain.value = 1E-05;
   var max_amplification = 1E-03;
 
-  analyser.fftSize = 4096;
+  analyser.fftSize = 2048;
   let amplitudeBufferLength = analyser.fftSize;
   let frequencyBufferLength = analyser.frequencyBinCount;
   let amplitudeData = new Uint8Array(amplitudeBufferLength);
