@@ -54,7 +54,7 @@ function visualize(stream) {
   gainNode.gain.value = 1E-05;
   var max_amplification = 1E-03;
 
-  analyser.fftSize = 2048;
+  analyser.fftSize = 4096;
   let amplitudeBufferLength = analyser.fftSize;
   let frequencyBufferLength = analyser.frequencyBinCount;
   let amplitudeData = new Uint8Array(amplitudeBufferLength);
@@ -82,7 +82,7 @@ function visualize(stream) {
 
   rec_raw.setOptions({
       timeLimit:120,
-      bufferSize: 16384,
+      bufferSize: 8192s,
       encodeAfterRecord:true,
         ogg: {quality: 0.5},
         mp3: {bitRate: 160}
