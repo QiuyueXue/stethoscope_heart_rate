@@ -48,11 +48,11 @@ function visualize(stream) {
   const source = audioCtx.createMediaStreamSource(stream);
   const analyser = audioCtx.createAnalyser();
   let feedForward = [1, 4, 6, 4, 1];
-  let feedBack = [1, -3.89515962872624, 5.69093969755989, -3.69623536934508,0.900457760845518];
+  let feedBack = [1, -3.89515962872624, 5.69093969755989, -3.69623536934508, 0.900457760845518];
   const iirfilter = audioCtx.createIIRFilter(feedforward=feedForward, feedback=feedBack);
   var gainNode = audioCtx.createGain();
   gainNode.gain.value = 1E-05;
-  var max_amplification = 5E-03;
+  var max_amplification = 1E-03;
 
   analyser.fftSize = 2048;
   let amplitudeBufferLength = analyser.fftSize;
@@ -80,11 +80,6 @@ function visualize(stream) {
       createDownloadLink(blob,recorder.encoding, "raw")
   }
 
-  // rec_filtered = new WebAudioRecorder(gainNode, {workerDir: "scripts/lib/", encoding: "wav", numChannels: 2});
-  // rec_filtered.onComplete = function(recorder, blob) {
-  //     createDownloadLink(blob,recorder.encoding, "filtered")
-  // }
-
   rec_raw.setOptions({
       timeLimit:120,
       bufferSize: 8192,
@@ -92,15 +87,6 @@ function visualize(stream) {
         ogg: {quality: 0.5},
         mp3: {bitRate: 160}
       });
-
-  // rec_filtered.setOptions({
-  //     timeLimit:60,
-  //     bufferSize: 8192,
-  //     encodeAfterRecord:true,
-  //       ogg: {quality: 0.5},
-  //       mp3: {bitRate: 160}
-  //     });
-
 
   draw();
 
@@ -116,14 +102,12 @@ function visualize(stream) {
 
     drawAmplitudeGraph();
     compute_peaks();
-    // drawFrequencyGraph();
-    max_amplitude = Math.max.apply(Math, amplitudeData);
+    max_amplitude = Math.max.apply(null, data);
     document.getElementById('volume').addEventListener('change', function() {
         max_amplification = this.value;
     });
     auto_gain = max_amplification/max_amplitude;
     gainNode.gain.value = auto_gain;
-
   }
 
   function drawAmplitudeGraph() {
@@ -151,7 +135,7 @@ function visualize(stream) {
 
     amplitudeCanvasCtx.lineTo(amplitudeCanvas.width, amplitudeCanvas.height/2);
     amplitudeCanvasCtx.stroke();
-  }
+  }}
 
   function compute_peaks(){
     var peaks = getPeaksAtThreshold(graphWindowData);
