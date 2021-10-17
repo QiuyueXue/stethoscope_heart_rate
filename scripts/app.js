@@ -102,7 +102,7 @@ function visualize(stream) {
 
     drawAmplitudeGraph();
     compute_peaks();
-    max_amplitude = Math.max.apply(null, data);
+    max_amplitude = Math.max.apply(null, amplitudeData);
     document.getElementById('volume').addEventListener('change', function() {
         max_amplification = this.value;
     });
@@ -132,7 +132,6 @@ function visualize(stream) {
 
       x += sliceWidth;
     }
-
     amplitudeCanvasCtx.lineTo(amplitudeCanvas.width, amplitudeCanvas.height/2);
     amplitudeCanvasCtx.stroke();
   }
@@ -166,7 +165,8 @@ function visualize(stream) {
     intervalCounts.push(interval);
   });
   return intervalCounts;
-}}
+  }
+}
 
 
 function gotStream(stream) {
@@ -189,7 +189,7 @@ function start() {
   const constraints = {
     audio: {
       deviceId: audioSource ? {exact: audioSource} : undefined,
-      echoCancellation: false,
+      echoCancellation: true,
       noiseSuppression: true
     }
   };
