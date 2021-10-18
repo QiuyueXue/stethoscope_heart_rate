@@ -135,7 +135,9 @@ function visualize(stream) {
     amplitudeCanvasCtx.stroke();
   }
   function compute_peaks(){
-    var peaks_locs_array, peaks_amp_array = getPeaksAtThreshold(graphWindowData);
+    var peaks = getPeaksAtThreshold(graphWindowData);
+    peaks_locs_array = peaks[0];
+    peaks_amp_array = peaks[1];
     var heart_rate = peaks_locs_array.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
     document.getElementById("heart_rate").innerHTML = heart_rate;
   }
@@ -151,7 +153,7 @@ function visualize(stream) {
             max = arr[i];
         }
     }
-    return maxIndex, max;
+    return [maxIndex, max];
   }
   function getPeaksAtThreshold(data) {
     var threshold = 0.8*Math.max.apply(null, data);
@@ -160,14 +162,16 @@ function visualize(stream) {
     for (var i = 0; i < data.length;) {
       if (data[i] > threshold) {
         tmp = data.slice(i, i+0.05*48000);
-        max_loc, max_amp = indexOfMax(tmp);  //max_loc in tmp array
+        maxs = indexOfMax(tmp);  //max_loc in tmp array
+        max_loc = maxs[0];
+        max_amp = maxs[1];
         peaks_locs_array.push(i+max_loc);
-        peaks_amp_array.pussh(max_amp);
+        peaks_amp_array.push(max_amp);
         i += max_loc+0.2*48000;  // Skip forward ~ 1/4s to get past this peak.
       }
       i += 100;
     }
-    return peaks_locs_array, peaks_amp_array;
+    return [peaks_locs_array, peaks_amp_array];
   }
   function countIntervalsBetweenNearbyPeaks(peaks) {
   var intervalCounts = [];
