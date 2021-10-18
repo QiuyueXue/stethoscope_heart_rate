@@ -135,27 +135,39 @@ function visualize(stream) {
     amplitudeCanvasCtx.stroke();
   }
   function compute_peaks(){
-    var peaks = getPeaksAtThreshold(graphWindowData);
-    console.log(peaks);
-    console.log(peaks.length);
-    var heart_rate = peaks.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
+    var peaks_locs_array, peaks_amp_array = getPeaksAtThreshold(graphWindowData);
+    var heart_rate = peaks_locs_array.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
     document.getElementById("heart_rate").innerHTML = heart_rate;
+  }
+  function indexOfMax(arr) {
+    if (arr.length === 0) {
+        return -1;
+    }
+    var max = arr[0];
+    var maxIndex = 0;
+    for (var i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            maxIndex = i;
+            max = arr[i];
+        }
+    }
+    return maxIndex, max;
   }
   function getPeaksAtThreshold(data) {
     var threshold = 0.8*Math.max.apply(null, data);
-    console.log(Math.max.apply(null, data));
-    console.log(threshold);
-    var peaksArray = [];
-    // var length = data.length;
+    var peaks_locs_array = [];
+    var peaks_amp_array = [];
     for (var i = 0; i < data.length;) {
       if (data[i] > threshold) {
-        peaksArray.push(i);
-        // Skip forward ~ 1/4s to get past this peak.
-        i += 0.2*48000;
+        tmp = data.slice(i, i+0.05*48000);
+        max_loc, max_amp = indexOfMax(tmp);  //max_loc in tmp array
+        peaks_locs_array.push(i+max_loc);
+        peaks_amp_array.pussh(max_amp);
+        i += max_loc+0.2*48000;  // Skip forward ~ 1/4s to get past this peak.
       }
       i += 100;
     }
-    return peaksArray;
+    return peaks_locs_array, peaks_amp_array;
   }
   function countIntervalsBetweenNearbyPeaks(peaks) {
   var intervalCounts = [];
