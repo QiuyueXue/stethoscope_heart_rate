@@ -135,11 +135,15 @@ function visualize(stream) {
     amplitudeCanvasCtx.stroke();
   }
   function compute_peaks(){
+    // var peaks = getPeaksAtThreshold(graphWindowData);
+    // peaks_locs_array = peaks[0];
+    // peaks_amp_array = peaks[1];
+    // var heart_rate = peaks_locs_array.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
     var peaks = getPeaksAtThreshold(graphWindowData);
-    peaks_locs_array = peaks[0];
-    peaks_amp_array = peaks[1];
-    var heart_rate = peaks_locs_array.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
+    heart_rate = peaks[0];
+    snr = peaks[1];
     document.getElementById("heart_rate").innerHTML = heart_rate;
+    document.getElementById("snr").innerHTML = snr;
   }
   function indexOfMax(arr) {
     if (arr.length === 0) {
@@ -156,7 +160,7 @@ function visualize(stream) {
     return [maxIndex, max];
   }
   function getPeaksAtThreshold(data) {
-    var threshold = 0.8*Math.max.apply(null, data);
+    var threshold = 0.5*Math.max.apply(null, data);
     var peaks_locs_array = [];
     var peaks_amp_array = [];
     for (var i = 0; i < data.length;) {
@@ -167,20 +171,34 @@ function visualize(stream) {
         max_amp = maxs[1];
         peaks_locs_array.push(i+max_loc);
         peaks_amp_array.push(max_amp);
-        i += max_loc+0.2*48000;  // Skip forward ~ 1/4s to get past this peak.
+        i += max_loc+0.15*48000;  // Skip forward to get past this peak.
       }
       i += 100;
     }
-    return [peaks_locs_array, peaks_amp_array];
+    let locs_ = peaks_locs_array.filter((element, index) => {return index % 2 === 0;})
+    heart_period = mean(diff(locs_));
+    heart_rate = 60*48000/heart_period;
+
+    var noise_total = [];
+    for i=1:length(peaks_locs_array)-1
+      gap_length = peaks_locs_array(i+1) - peaks_locs_array(i);
+      if gap_length>2000
+        noise = data(peaks_locs_array(i)+gap_length/2-1000:peaks_locs_array(i)+gap_length/2+1000);
+        noise_total.push(noise);
+    let peaks_level = peaks_amp_array => peaks_amp_array.reduce((a,b) => a + b, 0) / peaks_amp_array.length
+    let noise_level = noise_total => noise_total.reduce((a,b) => a + b, 0) / noise_total.length
+    snr = peaks_level/noise_level;
+    return [heart_rate, snr];
+    // return [peaks_locs_array, peaks_amp_array];
   }
-  function countIntervalsBetweenNearbyPeaks(peaks) {
-  var intervalCounts = [];
-  peaks.forEach(function(peak, index){
-    var interval = peaks[index + i] - peak;
-    intervalCounts.push(interval);
-  });
-  return intervalCounts;
-  }
+  // function countIntervalsBetweenNearbyPeaks(peaks) {
+  // var intervalCounts = [];
+  // peaks.forEach(function(peak, index){
+  //   var interval = peaks[index + i] - peak;
+  //   intervalCounts.push(interval);
+  // });
+  // return intervalCounts;
+  // }
 }
 
 
