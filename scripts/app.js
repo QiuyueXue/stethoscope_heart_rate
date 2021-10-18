@@ -189,7 +189,7 @@ function start() {
     audio: {
       deviceId: audioSource ? {exact: audioSource} : undefined,
       echoCancellation: true,
-      noiseSuppression: false
+      noiseSuppression: true
     }
   };
   
