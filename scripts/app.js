@@ -180,11 +180,13 @@ function visualize(stream) {
     heart_rate = 60*48000/heart_period;
 
     var noise_total = [];
-    for i=1:length(peaks_locs_array)-1
+    for (var i = 0; i < peaks_locs_array.length-1;) {
       gap_length = peaks_locs_array(i+1) - peaks_locs_array(i);
-      if gap_length>2000
+      if gap_length>2000{
         noise = data(peaks_locs_array(i)+gap_length/2-1000:peaks_locs_array(i)+gap_length/2+1000);
         noise_total.push(noise);
+      }
+    }
     let peaks_level = peaks_amp_array => peaks_amp_array.reduce((a,b) => a + b, 0) / peaks_amp_array.length
     let noise_level = noise_total => noise_total.reduce((a,b) => a + b, 0) / noise_total.length
     snr = peaks_level/noise_level;
