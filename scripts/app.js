@@ -183,7 +183,7 @@ function visualize(stream) {
       heart_period_sum += peaks_locs_array[i] - peaks_locs_array[i-2];
       i_sum += 1; 
     }
-    console.log(heart_period_sum);
+    // console.log(heart_period_sum);
     heart_period = heart_period_sum/i_sum;
     heart_rate = 60*48000/heart_period;
 
