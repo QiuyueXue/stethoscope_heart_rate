@@ -175,8 +175,15 @@ function visualize(stream) {
       }
       i += 100;
     }
-    let locs_ = peaks_locs_array.filter((element, index) => {return index % 2 === 0;})
-    heart_period = mean(diff(locs_));
+    // let locs_ = peaks_locs_array.filter((element, index) => {return index % 2 === 0;})
+    // heart_period = mean(diff(locs_));
+    var heart_period_sum = 0;
+    var i_sum = 0;
+    for (var i = 2; i < peaks_locs_array.length; i+=2) {
+      heart_period_sum += peaks_locs_array[i] - peaks_locs_array[i-2];
+      i_sum += 1; 
+    }
+    heart_period = heart_period_sum/i_sum;
     heart_rate = 60*48000/heart_period;
 
     var noise_total = [];
