@@ -170,7 +170,7 @@ function visualize(stream) {
     return sum/arr.length;
   }
   function getPeaksAtThreshold(data) {
-    var threshold = 0.3*Math.max.apply(null, data);
+    var threshold = 0.5*Math.max.apply(null, data);
     var peaks_locs_array = [];
     var peaks_amp_array = [];
     for (var i = 0; i < data.length;) {
@@ -183,7 +183,9 @@ function visualize(stream) {
         peaks_amp_array.push(max_amp);
         i += max_loc+0.15*48000;  // Skip forward to get past this peak.
       }
-      i += 100;
+      else{
+        i += 100;
+      }
     }
     // let locs_ = peaks_locs_array.filter((element, index) => {return index % 2 === 0;})
     // heart_period = mean(diff(locs_));
