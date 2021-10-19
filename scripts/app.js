@@ -160,7 +160,7 @@ function visualize(stream) {
     return [maxIndex, max];
   }
   function getPeaksAtThreshold(data) {
-    var threshold = 0.5*Math.max.apply(null, data);
+    var threshold = 0.7*Math.max.apply(null, data);
     var peaks_locs_array = [];
     var peaks_amp_array = [];
     for (var i = 0; i < data.length;) {
@@ -185,9 +185,9 @@ function visualize(stream) {
     }
     // console.log(heart_period_sum);
     heart_period = heart_period_sum/i_sum;
-    heart_rate = 60*48000/heart_period;
+    // heart_rate = 60*48000/heart_period;
 
-    let snr = 1;
+    let snr = i_sum;
     // var noise_total = [];
     // for (var i = 0; i < peaks_locs_array.length-1;) {
     //   gap_length = peaks_locs_array[i+1] - peaks_locs_array[i];
