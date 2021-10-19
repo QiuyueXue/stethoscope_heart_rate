@@ -187,28 +187,21 @@ function visualize(stream) {
     heart_period = heart_period_sum/i_sum;
     heart_rate = 60*48000/heart_period;
 
-    var noise_total = [];
-    for (var i = 0; i < peaks_locs_array.length-1;) {
-      gap_length = peaks_locs_array[i+1] - peaks_locs_array[i];
-      if (gap_length > 2000){
-        noise = data.slice(peaks_locs_array[i]+gap_length/2-1000, peaks_locs_array[i]+gap_length/2+1000);
-        noise_total.push(noise);
-      }
-    }
-    let peaks_level = peaks_amp_array => peaks_amp_array.reduce((a,b) => a + b, 0) / peaks_amp_array.length
-    let noise_level = noise_total => noise_total.reduce((a,b) => a + b, 0) / noise_total.length
-    snr = peaks_level/noise_level;
+    let snr = 1;
+    // var noise_total = [];
+    // for (var i = 0; i < peaks_locs_array.length-1;) {
+    //   gap_length = peaks_locs_array[i+1] - peaks_locs_array[i];
+    //   if (gap_length > 2000){
+    //     noise = data.slice(peaks_locs_array[i]+gap_length/2-1000, peaks_locs_array[i]+gap_length/2+1000);
+    //     noise_total.push(noise);
+    //   }
+    // }
+    // let peaks_level = peaks_amp_array => peaks_amp_array.reduce((a,b) => a + b, 0) / peaks_amp_array.length
+    // let noise_level = noise_total => noise_total.reduce((a,b) => a + b, 0) / noise_total.length
+    // snr = peaks_level/noise_level;
     return [heart_rate, snr];
     // return [peaks_locs_array, peaks_amp_array];
   }
-  // function countIntervalsBetweenNearbyPeaks(peaks) {
-  // var intervalCounts = [];
-  // peaks.forEach(function(peak, index){
-  //   var interval = peaks[index + i] - peak;
-  //   intervalCounts.push(interval);
-  // });
-  // return intervalCounts;
-  // }
 }
 
 
