@@ -198,7 +198,7 @@ function visualize(stream) {
 
     // heart_period = heart_period_sum/i_sum;
     // heart_rate = 60*48000/heart_period;
-    heart_rate = peaks_locs_array.length;
+    heart_rate = peaks_locs_array.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
 
     var noise_list = [];
     for (var i = 0; i < peaks_locs_array.length-1; i++) {
