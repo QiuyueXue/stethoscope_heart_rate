@@ -172,7 +172,7 @@ function visualize(stream) {
     return sum/arr.length;
   }
   function getPeaksAtThreshold(data) {
-    var threshold = 0.8*Math.max.apply(null, data);
+    var threshold = 0.5*Math.max.apply(null, data);
     var peaks_loc_array = [];
     var peaks_amp_array = [];
     // var length = data.length;
@@ -180,7 +180,7 @@ function visualize(stream) {
       if (data[i] > threshold) {
         peaks_loc_array.push(i);
         peaks_amp_array.push(data[i]);
-        i += 0.2*48000; // Skip forward ~ 1/4s to get past this peak.
+        i += 0.15*48000; // Skip forward to get past this peak.
       }
       i += 100;
     }
