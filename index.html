@@ -15,7 +15,8 @@
        <label for="test_ver">Test version: </label>
        <select id="test_ver">
         <option value="1"selected="selected">Phone Mic</option>
-        <option value="2">3D print</option>
+        <option value="2">3D print small</option>
+        <option value="3">3D print big case</option>
       </select>
       </p>
       <p>
@@ -45,7 +46,6 @@
           <input id="volume" type="range" min="1E-05" max="1E-02" step="1E-04" value="5E-04"/>
         </div>
         <h1>"Heart rate: " <span id="heart_rate"></span></h1>
-        <h1>"SNR: " <span id="snr"></span></h1>
         <p>
           <button id=startRecord>record</button>
           <button id=stopRecord disabled>stop</button>
@@ -54,14 +54,22 @@
           <audio id=recordedAudio></audio>
           <a id=audioDownload></a>
         </p>
+        <!-- <div id="buttons">
+          <button class="record">Record</button>
+          <button class="stop">Stop</button>
+        </div> -->
       </section>
       
+      <!-- <section class="sound-clips">
+      </section> -->
       <div style="max-width: 28em;">
         <pre>Recordings</pre>
         <ol id="recordingsList"></ol>
       </div>
+
     </div>
 
+    <!-- <script src="scripts/processing.js"></script> -->
     <script src="scripts/lib/WebAudioRecorder.min.js"></script>
     <script src="scripts/lib/d3-peaks.js"></script>
     <script src="scripts/app.js"></script>

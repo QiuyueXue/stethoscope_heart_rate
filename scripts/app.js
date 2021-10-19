@@ -15,6 +15,7 @@ const selectors = [audioInputSelect];
 
 
 
+
 function gotDevices(deviceInfos) {
   // Handles being called several times to update labels. Preserve values.
   const values = selectors.map(select => select.value);
@@ -47,11 +48,11 @@ function visualize(stream) {
   const source = audioCtx.createMediaStreamSource(stream);
   const analyser = audioCtx.createAnalyser();
   let feedForward = [1, 4, 6, 4, 1];
-  let feedBack = [1, -3.89515962872624, 5.69093969755989, -3.69623536934508, 0.900457760845518];
+  let feedBack = [1, -3.89515962872624, 5.69093969755989, -3.69623536934508,0.900457760845518];
   const iirfilter = audioCtx.createIIRFilter(feedforward=feedForward, feedback=feedBack);
   var gainNode = audioCtx.createGain();
   gainNode.gain.value = 1E-05;
-  var max_amplification = 1E-03;
+  var max_amplification = 5E-03;
 
   analyser.fftSize = 2048;
   let amplitudeBufferLength = analyser.fftSize;
@@ -79,6 +80,11 @@ function visualize(stream) {
       createDownloadLink(blob,recorder.encoding, "raw")
   }
 
+  // rec_filtered = new WebAudioRecorder(gainNode, {workerDir: "scripts/lib/", encoding: "wav", numChannels: 2});
+  // rec_filtered.onComplete = function(recorder, blob) {
+  //     createDownloadLink(blob,recorder.encoding, "filtered")
+  // }
+
   rec_raw.setOptions({
       timeLimit:120,
       bufferSize: 8192,
@@ -86,6 +92,15 @@ function visualize(stream) {
         ogg: {quality: 0.5},
         mp3: {bitRate: 160}
       });
+
+  // rec_filtered.setOptions({
+  //     timeLimit:60,
+  //     bufferSize: 8192,
+  //     encodeAfterRecord:true,
+  //       ogg: {quality: 0.5},
+  //       mp3: {bitRate: 160}
+  //     });
+
 
   draw();
 
@@ -101,12 +116,14 @@ function visualize(stream) {
 
     drawAmplitudeGraph();
     compute_peaks();
-    max_amplitude = Math.max.apply(null, amplitudeData);
+    // drawFrequencyGraph();
+    max_amplitude = Math.max.apply(Math, amplitudeData);
     document.getElementById('volume').addEventListener('change', function() {
         max_amplification = this.value;
     });
     auto_gain = max_amplification/max_amplitude;
     gainNode.gain.value = auto_gain;
+
   }
 
   function drawAmplitudeGraph() {
@@ -131,93 +148,41 @@ function visualize(stream) {
 
       x += sliceWidth;
     }
+
     amplitudeCanvasCtx.lineTo(amplitudeCanvas.width, amplitudeCanvas.height/2);
     amplitudeCanvasCtx.stroke();
   }
+
   function compute_peaks(){
-    // var peaks = getPeaksAtThreshold(graphWindowData);
-    // peaks_locs_array = peaks[0];
-    // peaks_amp_array = peaks[1];
-    // var heart_rate = peaks_locs_array.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
     var peaks = getPeaksAtThreshold(graphWindowData);
-    heart_rate = peaks[0];
-    snr = peaks[1];
+    // console.log(peaks);
+    // console.log(peaks.length);
+    var heart_rate = peaks.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
     document.getElementById("heart_rate").innerHTML = heart_rate;
-    document.getElementById("snr").innerHTML = snr;
-  }
-  function indexOfMax(arr) {
-    if (arr.length === 0) {
-        return -1;
-    }
-    var max = arr[0];
-    var maxIndex = 0;
-    for (var i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
-            maxIndex = i;
-            max = arr[i];
-        }
-    }
-    return [maxIndex, max];
-  }
-  function compute_average(arr){
-    if (arr.length === 0) {
-        return 0;
-    }
-    var sum = 0;
-    for (var i = 1; i < arr.length; i++) {
-      sum += arr[i];
-    }
-    return sum/arr.length;
   }
   function getPeaksAtThreshold(data) {
-    var threshold = 0.5*Math.max.apply(null, data);
-    var peaks_locs_array = [];
-    var peaks_amp_array = [];
+    var threshold = 0.8*Math.max.apply(null, data);
+    console.log(Math.max.apply(null, data));
+    console.log(threshold);
+    var peaksArray = [];
+    // var length = data.length;
     for (var i = 0; i < data.length;) {
       if (data[i] > threshold) {
-        // tmp = data.slice(i, i+0.05*48000);
-        // maxs = indexOfMax(tmp);  //max_loc in tmp array
-        // max_loc = maxs[0];
-        // max_amp = maxs[1];
-        // peaks_locs_array.push(i+max_loc);
-        // peaks_amp_array.push(max_amp);
-        // i += max_loc+0.15*48000;  // Skip forward to get past this peak
-        peaks_locs_array.push(i);
-        peaks_amp_array.push(data[i]);
-        i += 0.15*48000;
+        peaksArray.push(i);
+        // Skip forward ~ 1/4s to get past this peak.
+        i += 0.2*48000;
       }
-      else{
-        i += 100;
-      }
+      i += 100;
     }
-    // let locs_ = peaks_locs_array.filter((element, index) => {return index % 2 === 0;})
-    // heart_period = mean(diff(locs_));
-    var heart_period_sum = 0;
-    var i_sum = 0;
-    for (var i = 2; i < peaks_locs_array.length; i+=2) {
-      heart_period_sum += peaks_locs_array[i] - peaks_locs_array[i-2];
-      i_sum += 1; 
-    }
-
-    // heart_period = heart_period_sum/i_sum;
-    // heart_rate = 60*48000/heart_period;
-    heart_rate = peaks_locs_array.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
-
-    var noise_list = [];
-    for (var i = 0; i < peaks_locs_array.length-1; i++) {
-      gap_length = peaks_locs_array[i+1] - peaks_locs_array[i];
-      if (gap_length > 2000){
-        noise = data.slice(peaks_locs_array[i]+gap_length/2-1000, peaks_locs_array[i]+gap_length/2+1000);
-        noise_list.push(compute_average(noise));
-      }
-    }
-    
-    let peaks_level = compute_average(peaks_amp_array);
-    let noise_level = compute_average(noise_list);
-    let snr = peaks_level/noise_level;
-    return [heart_rate, snr];
-    // return [peaks_locs_array, peaks_amp_array];
+    return peaksArray;
   }
+  function countIntervalsBetweenNearbyPeaks(peaks) {
+  var intervalCounts = [];
+  peaks.forEach(function(peak, index){
+    var interval = peaks[index + i] - peak;
+    intervalCounts.push(interval);
+  });
+  return intervalCounts;
 }
 
 
@@ -241,7 +206,7 @@ function start() {
   const constraints = {
     audio: {
       deviceId: audioSource ? {exact: audioSource} : undefined,
-      echoCancellation: true,
+      echoCancellation: false,
       noiseSuppression: true
     }
   };
