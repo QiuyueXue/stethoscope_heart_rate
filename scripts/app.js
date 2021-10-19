@@ -177,12 +177,13 @@ function visualize(stream) {
     return peaksArray;
   }
   function countIntervalsBetweenNearbyPeaks(peaks) {
-  var intervalCounts = [];
-  peaks.forEach(function(peak, index){
-    var interval = peaks[index + i] - peak;
-    intervalCounts.push(interval);
-  });
-  return intervalCounts;
+    var intervalCounts = [];
+    peaks.forEach(function(peak, index){
+      var interval = peaks[index + i] - peak;
+      intervalCounts.push(interval);
+    });
+    return intervalCounts;
+  }
 }
 
 
