@@ -183,12 +183,13 @@ function visualize(stream) {
       heart_period_sum += peaks_locs_array[i] - peaks_locs_array[i-2];
       i_sum += 1; 
     }
+    console.log(heart_period_sum);
     heart_period = heart_period_sum/i_sum;
     heart_rate = 60*48000/heart_period;
 
     var noise_total = [];
     for (var i = 0; i < peaks_locs_array.length-1;) {
-      gap_length = peaks_locs_array(i+1) - peaks_locs_array(i);
+      gap_length = peaks_locs_array[i+1] - peaks_locs_array[i];
       if (gap_length > 2000){
         noise = data.slice(peaks_locs_array(i)+gap_length/2-1000, peaks_locs_array(i)+gap_length/2+1000);
         noise_total.push(noise);
