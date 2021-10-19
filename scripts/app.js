@@ -154,9 +154,21 @@ function visualize(stream) {
   }
 
   function compute_peaks(){
-    var heart_rate = getPeaksAtThreshold(graphWindowData);
+    var peaks = getPeaksAtThreshold(graphWindowData);
+    heart_rate = peaks[0];
+    snr = peaks[1];
     // var heart_rate = peaks.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
-    document.getElementById("heart_rate").innerHTML = heart_rate;
+    document.getElementById("snr").innerHTML = snr;
+  }
+  function compute_average(arr){
+    if (arr.length === 0) {
+        return 0;
+    }
+    var sum = 0;
+    for (var i = 1; i < arr.length; i++) {
+      sum += arr[i];
+    }
+    return sum/arr.length;
   }
   function getPeaksAtThreshold(data) {
     var threshold = 0.8*Math.max.apply(null, data);
@@ -179,15 +191,19 @@ function visualize(stream) {
     }
     heart_period = period_sum/i_sum;
     heart_rate = 60*48000/heart_period;
-    return heart_rate;
-  }
-  function countIntervalsBetweenNearbyPeaks(peaks) {
-    var intervalCounts = [];
-    peaks.forEach(function(peak, index){
-      var interval = peaks[index + i] - peak;
-      intervalCounts.push(interval);
-    });
-    return intervalCounts;
+
+    var noise_list = [];
+    for (var i = 0; i < peaks_loc_array.length-1; i+=1) {
+      gap_length = peaks_locs_array[i+1] - peaks_locs_array[i];
+      if (gap_length > 2000){
+        noise = data.slice(peaks_locs_array[i]+gap_length/2-1000, peaks_locs_array[i]+gap_length/2+1000);
+        noise_list.push(compute_average(noise));
+      }
+    }
+    let peaks_level = compute_average(peaks_amp_array);
+    let noise_level = compute_average(noise_list);
+    let snr = peaks_level/noise_level;
+    return [heart_rate, snr];
   }
 }
 
