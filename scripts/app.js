@@ -159,6 +159,16 @@ function visualize(stream) {
     }
     return [maxIndex, max];
   }
+  function compute_average(arr){
+    if (arr.length === 0) {
+        return 0;
+    }
+    var sum = 0;
+    for (var i = 1; i < arr.length; i++) {
+      sum += arr[i];
+    }
+    return sum/arr.length;
+  }
   function getPeaksAtThreshold(data) {
     var threshold = 0.3*Math.max.apply(null, data);
     var peaks_locs_array = [];
@@ -183,22 +193,23 @@ function visualize(stream) {
       heart_period_sum += peaks_locs_array[i] - peaks_locs_array[i-2];
       i_sum += 1; 
     }
-    // console.log(heart_period_sum);
-    heart_period = heart_period_sum/i_sum;
-    heart_rate = 60*48000/heart_period;
 
-    let snr = i_sum;
-    // var noise_total = [];
-    // for (var i = 0; i < peaks_locs_array.length-1;) {
-    //   gap_length = peaks_locs_array[i+1] - peaks_locs_array[i];
-    //   if (gap_length > 2000){
-    //     noise = data.slice(peaks_locs_array[i]+gap_length/2-1000, peaks_locs_array[i]+gap_length/2+1000);
-    //     noise_total.push(noise);
-    //   }
-    // }
-    // let peaks_level = peaks_amp_array => peaks_amp_array.reduce((a,b) => a + b, 0) / peaks_amp_array.length
-    // let noise_level = noise_total => noise_total.reduce((a,b) => a + b, 0) / noise_total.length
-    // snr = peaks_level/noise_level;
+    // heart_period = heart_period_sum/i_sum;
+    // heart_rate = 60*48000/heart_period;
+    heart_rate = peaks_locs_array.length;
+
+    var noise_list = [];
+    for (var i = 0; i < peaks_locs_array.length-1;) {
+      gap_length = peaks_locs_array[i+1] - peaks_locs_array[i];
+      if (gap_length > 2000){
+        noise = data.slice(peaks_locs_array[i]+gap_length/2-1000, peaks_locs_array[i]+gap_length/2+1000);
+        noise_list.push(compute_average(noise));
+      }
+    }
+    
+    let peaks_level = compute_average(peaks_amp_array);
+    let noise_level = compute_average(noise_list);
+    let snr = peaks_level/noise_level;
     return [heart_rate, snr];
     // return [peaks_locs_array, peaks_amp_array];
   }
