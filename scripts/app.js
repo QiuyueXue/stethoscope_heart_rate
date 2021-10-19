@@ -199,7 +199,7 @@ function visualize(stream) {
     heart_rate = peaks_locs_array.length;
 
     var noise_list = [];
-    for (var i = 0; i < peaks_locs_array.length-1;) {
+    for (var i = 0; i < peaks_locs_array.length-1; i++) {
       gap_length = peaks_locs_array[i+1] - peaks_locs_array[i];
       if (gap_length > 2000){
         noise = data.slice(peaks_locs_array[i]+gap_length/2-1000, peaks_locs_array[i]+gap_length/2+1000);
