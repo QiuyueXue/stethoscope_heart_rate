@@ -183,7 +183,7 @@ function visualize(stream) {
     for (var i = 0; i < peaks_locs_array.length-1;) {
       gap_length = peaks_locs_array(i+1) - peaks_locs_array(i);
       if (gap_length > 2000){
-        noise = data(peaks_locs_array(i)+gap_length/2-1000:peaks_locs_array(i)+gap_length/2+1000);
+        noise = data.slice(peaks_locs_array(i)+gap_length/2-1000, peaks_locs_array(i)+gap_length/2+1000);
         noise_total.push(noise);
       }
     }
