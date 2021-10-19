@@ -175,13 +175,16 @@ function visualize(stream) {
     var peaks_amp_array = [];
     for (var i = 0; i < data.length;) {
       if (data[i] > threshold) {
-        tmp = data.slice(i, i+0.05*48000);
-        maxs = indexOfMax(tmp);  //max_loc in tmp array
-        max_loc = maxs[0];
-        max_amp = maxs[1];
-        peaks_locs_array.push(i+max_loc);
-        peaks_amp_array.push(max_amp);
-        i += max_loc+0.15*48000;  // Skip forward to get past this peak.
+        // tmp = data.slice(i, i+0.05*48000);
+        // maxs = indexOfMax(tmp);  //max_loc in tmp array
+        // max_loc = maxs[0];
+        // max_amp = maxs[1];
+        // peaks_locs_array.push(i+max_loc);
+        // peaks_amp_array.push(max_amp);
+        // i += max_loc+0.15*48000;  // Skip forward to get past this peak
+        peaks_locs_array.push(i);
+        peaks_amp_array.push(data[i]);
+        i += 0.15*48000;
       }
       else{
         i += 100;
