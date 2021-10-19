@@ -194,9 +194,9 @@ function visualize(stream) {
 
     var noise_list = [];
     for (var i = 0; i < peaks_loc_array.length-1; i+=1) {
-      gap_length = peaks_locs_array[i+1] - peaks_locs_array[i];
+      gap_length = peaks_loc_array[i+1] - peaks_loc_array[i];
       if (gap_length > 2000){
-        noise = data.slice(peaks_locs_array[i]+gap_length/2-1000, peaks_locs_array[i]+gap_length/2+1000);
+        noise = data.slice(peaks_loc_array[i]+gap_length/2-1000, peaks_loc_array[i]+gap_length/2+1000);
         noise_list.push(compute_average(noise));
       }
     }
