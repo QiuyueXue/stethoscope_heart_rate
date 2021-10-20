@@ -154,10 +154,10 @@ function visualize(stream) {
   }
 
   function compute_peaks(){
-    var peaks = getPeaksAtThreshold(graphWindowData);
-    heart_rate = peaks[0];
-    snr = peaks[1];
-    document.getElementById("heart_rate").innerHTML = Math.floor(heart_rate);
+    var snr = getPeaksAtThreshold(graphWindowData);
+    // snr = peaks[0];
+    // heart_rate = peaks[1];
+    // document.getElementById("heart_rate").innerHTML = Math.floor(heart_rate);
     // document.getElementById("siganl_quality").innerHTML = siganl_quality;
     // document.getElementById("snr").innerHTML = snr;
     var elem = document.getElementById("myBar");
@@ -186,14 +186,14 @@ function visualize(stream) {
       }
       i += 100;
     }
-    var period_sum = 0;
-    var i_sum = 0;
-    var period_list = [];
-    for (var i = 2; i < peaks_loc_array.length; i+=2) {
-      period_list.push(peaks_loc_array[i] - peaks_loc_array[i-2]);
-    }
-    heart_period = compute_average(period_list);
-    heart_rate = 60*48000/heart_period;
+    // var period_sum = 0;
+    // var i_sum = 0;
+    // var period_list = [];
+    // for (var i = 2; i < peaks_loc_array.length; i+=2) {
+    //   period_list.push(peaks_loc_array[i] - peaks_loc_array[i-2]);
+    // }
+    // heart_period = compute_average(period_list);
+    // heart_rate = 60*48000/heart_period;
 
     // var period_std_sum = 0;
     // for (var i = 0; i < period_list.length; i+=1) {
@@ -216,13 +216,13 @@ function visualize(stream) {
     let peaks_level = compute_average(peaks_amp_array);
     let noise_level = compute_average(noise_list);
     let snr = peaks_level/noise_level;
-    if (peaks_loc_array.length <4 || period_list.length>17){
+    if (peaks_loc_array.length <4 || peaks_loc_array.length>17){
       snr = 0;
     }
     snr = Math.floor(snr*200-200);
     snr = snr>100 ? 100: snr;
-    // let siganl_quality = periodic_score;
-    return [heart_rate, snr];
+    
+    return snr;
   }
 }
 
