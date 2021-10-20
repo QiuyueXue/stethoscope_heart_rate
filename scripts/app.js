@@ -218,12 +218,14 @@ function visualize(stream) {
     let peaks_level = compute_average(peaks_amp_array);
     let noise_level = compute_average(noise_list);
     let snr = peaks_level/noise_level;
+    if (peaks_loc_array.length <4 || period_list.length>17){
+      snr = 0;
+    }
     snr = Math.floor(snr*100-50);
+    snr = snr>100 ? 100: snr;
     let siganl_quality = periodic_score;
     // let siganl_quality = snr*10000/periodic_score;
-    // if (peaks_loc_array.length <4 || period_list.length>17){
-    //   siganl_quality = 0;
-    // }
+    
     return [heart_rate, siganl_quality, snr];
   }
 }
