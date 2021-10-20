@@ -200,6 +200,10 @@ function visualize(stream) {
       period_std_sum += Math.abs(period_list[i] - heart_period);
     }
     periodic_score = period_std_sum/period_list.length;
+    // normalize periodic score from 8000-30000 range to 0-1
+    periodic_score = periodic_score<8000 ? 1:(periodic_score-8000);
+    periodic_score = periodic_score/22000;
+    periodic_score = periodic_score>1 ? periodic_score:1;
     
     var noise_list = [];
     for (var i = 0; i < peaks_loc_array.length-1; i+=1) {
@@ -214,9 +218,9 @@ function visualize(stream) {
     let snr = peaks_level/noise_level;
     let siganl_quality = periodic_score;
     // let siganl_quality = snr*10000/periodic_score;
-    if (peaks_loc_array.length <4 || period_list.length>17){
-      siganl_quality = 0;
-    }
+    // if (peaks_loc_array.length <4 || period_list.length>17){
+    //   siganl_quality = 0;
+    // }
     return [heart_rate, siganl_quality, snr];
   }
 }
