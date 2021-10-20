@@ -52,7 +52,7 @@ function visualize(stream) {
   const iirfilter = audioCtx.createIIRFilter(feedforward=feedForward, feedback=feedBack);
   var gainNode = audioCtx.createGain();
   gainNode.gain.value = 1E-05;
-  var max_amplification = 4E-03;
+  var max_amplification = 2E-03;
 
   analyser.fftSize = 2048;
   let amplitudeBufferLength = analyser.fftSize;
@@ -221,7 +221,7 @@ function visualize(stream) {
     if (peaks_loc_array.length <4 || period_list.length>17){
       snr = 0;
     }
-    snr = Math.floor(snr*100-50);
+    snr = Math.floor(snr*200-200);
     snr = snr>100 ? 100: snr;
     let siganl_quality = periodic_score;
     // let siganl_quality = snr*10000/periodic_score;
