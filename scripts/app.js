@@ -52,7 +52,7 @@ function visualize(stream) {
   const iirfilter = audioCtx.createIIRFilter(feedforward=feedForward, feedback=feedBack);
   var gainNode = audioCtx.createGain();
   gainNode.gain.value = 1E-05;
-  // var max_amplification = 5E-03;
+  var max_amplification = 4E-03;
 
   analyser.fftSize = 2048;
   let amplitudeBufferLength = analyser.fftSize;
@@ -162,6 +162,8 @@ function visualize(stream) {
     document.getElementById("heart_rate").innerHTML = Math.floor(heart_rate);
     document.getElementById("siganl_quality").innerHTML = siganl_quality;
     document.getElementById("snr").innerHTML = snr;
+    var elem = document.getElementById("myBar");
+    elem.style.width = snr + "%";
   }
   function compute_average(arr){
     if (arr.length === 0) {
@@ -216,7 +218,7 @@ function visualize(stream) {
     let peaks_level = compute_average(peaks_amp_array);
     let noise_level = compute_average(noise_list);
     let snr = peaks_level/noise_level;
-    snr = Math.floor(snr*100-100);
+    snr = Math.floor(snr*100-50);
     let siganl_quality = periodic_score;
     // let siganl_quality = snr*10000/periodic_score;
     // if (peaks_loc_array.length <4 || period_list.length>17){

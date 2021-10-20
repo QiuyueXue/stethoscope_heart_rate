@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 <html lang="en-us">
+  <style>
+  #myProgress {
+    width: 100%;
+    background-color: #ddd;
+  }
+
+  #myBar {
+    width: 1%;
+    height: 30px;
+    background-color: #04AA6D;
+  }
+  </style>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
@@ -16,7 +28,10 @@
         <canvas class="visualizer" height="300px"></canvas>
         <div class="col-3">
           <p>Adjust Amplification</p>
-          <input id="volume" type="range" min="1E-05" max="8E-03" step="1E-04" value="5E-04"/>
+          <input id="volume" type="range" min="1E-04" max="8E-03" step="1E-04" value="4E-03"/>
+        </div>
+        <div id="myProgress">
+          <div id="myBar"></div>
         </div>
         <h1>"Sound Quality: " <span id="siganl_quality"></span></h1>
         <h1>"Snr: " <span id="snr"></span></h1>
