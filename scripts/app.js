@@ -156,9 +156,7 @@ function visualize(stream) {
   function compute_peaks(){
     var peaks = getPeaksAtThreshold(graphWindowData);
     heart_rate = peaks[0];
-    siganl_quality = peaks[1];
-    snr = peaks[2];
-    // var heart_rate = peaks.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
+    snr = peaks[1];
     document.getElementById("heart_rate").innerHTML = Math.floor(heart_rate);
     // document.getElementById("siganl_quality").innerHTML = siganl_quality;
     // document.getElementById("snr").innerHTML = snr;
