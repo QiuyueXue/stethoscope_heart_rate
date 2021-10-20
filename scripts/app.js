@@ -160,8 +160,8 @@ function visualize(stream) {
     snr = peaks[2];
     // var heart_rate = peaks.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
     document.getElementById("heart_rate").innerHTML = Math.floor(heart_rate);
-    document.getElementById("siganl_quality").innerHTML = siganl_quality;
-    document.getElementById("snr").innerHTML = Math.floor(snr*100-100);
+    document.getElementById("siganl_quality").innerHTML = 1/siganl_quality;
+    document.getElementById("snr").innerHTML = snr;
   }
   function compute_average(arr){
     if (arr.length === 0) {
@@ -216,6 +216,7 @@ function visualize(stream) {
     let peaks_level = compute_average(peaks_amp_array);
     let noise_level = compute_average(noise_list);
     let snr = peaks_level/noise_level;
+    // snr = Math.floor(snr*100-100);
     let siganl_quality = periodic_score;
     // let siganl_quality = snr*10000/periodic_score;
     // if (peaks_loc_array.length <4 || period_list.length>17){
