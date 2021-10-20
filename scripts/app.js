@@ -202,8 +202,8 @@ function visualize(stream) {
     periodic_score = period_std_sum/period_list.length;
     // normalize periodic score from 8000-30000 range to 0-1
     periodic_score = periodic_score<8000 ? 1:(periodic_score-8000);
-    periodic_score = periodic_score/22000;
-    periodic_score = periodic_score>1 ? periodic_score:1;
+    periodic_score = periodic_score/40000;
+    // periodic_score = periodic_score>1 ? periodic_score:1;
     
     var noise_list = [];
     for (var i = 0; i < peaks_loc_array.length-1; i+=1) {
