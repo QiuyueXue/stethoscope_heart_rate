@@ -158,8 +158,8 @@ function visualize(stream) {
     heart_rate = peaks[0];
     snr = peaks[1];
     // var heart_rate = peaks.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
-    document.getElementById("heart_rate").innerHTML = heart_rate;
-    document.getElementById("snr").innerHTML = snr;
+    document.getElementById("heart_rate").innerHTML = Math.floor(heart_rate);
+    document.getElementById("snr").innerHTML = Math.floor(snr*100-100);
   }
   function compute_average(arr){
     if (arr.length === 0) {
