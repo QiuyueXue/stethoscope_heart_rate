@@ -156,10 +156,10 @@ function visualize(stream) {
   function compute_peaks(){
     var peaks = getPeaksAtThreshold(graphWindowData);
     heart_rate = peaks[0];
-    snr = peaks[1];
+    siganl_quality = peaks[1];
     // var heart_rate = peaks.length*48000*60/(2*GRAPH_WINDOW_LENGTH);
     document.getElementById("heart_rate").innerHTML = Math.floor(heart_rate);
-    document.getElementById("snr").innerHTML = Math.floor(snr*100-100);
+    document.getElementById("siganl_quality").innerHTML = Math.floor(siganl_quality);
   }
   function compute_average(arr){
     if (arr.length === 0) {
@@ -172,7 +172,7 @@ function visualize(stream) {
     return sum/arr.length;
   }
   function getPeaksAtThreshold(data) {
-    var threshold = 0.7*Math.max.apply(null, data);
+    var threshold = 0.5*Math.max.apply(null, data);
     var peaks_loc_array = [];
     var peaks_amp_array = [];
     // var length = data.length;
@@ -186,13 +186,21 @@ function visualize(stream) {
     }
     var period_sum = 0;
     var i_sum = 0;
+    var period_list = [];
     for (var i = 2; i < peaks_loc_array.length; i+=2) {
-      period_sum += peaks_loc_array[i] - peaks_loc_array[i-2];
-      i_sum += 1;
+      period_list.push(peaks_loc_array[i] - peaks_loc_array[i-2]);
+      // period_sum += peaks_loc_array[i] - peaks_loc_array[i-2];
+      // i_sum += 1;
     }
-    heart_period = period_sum/i_sum;
+    // heart_period = period_sum/i_sum;
+    heart_period = compute_average(period_list);
     heart_rate = 60*48000/heart_period;
-
+    var period_std_sum = 0;
+    for (var i = 0; i < period_list.length; i+=1) {
+      period_std_sum += Math.abs(period_list[i] - heart_period);
+    }
+    periodic_score = period_std_sum/period_list.length;
+    
     var noise_list = [];
     for (var i = 0; i < peaks_loc_array.length-1; i+=1) {
       gap_length = peaks_loc_array[i+1] - peaks_loc_array[i];
@@ -204,7 +212,8 @@ function visualize(stream) {
     let peaks_level = compute_average(peaks_amp_array);
     let noise_level = compute_average(noise_list);
     let snr = peaks_level/noise_level;
-    return [heart_rate, snr];
+    let siganl_quality = snr/periodic_score;
+    return [heart_rate, siganl_quality];
   }
 }
 
